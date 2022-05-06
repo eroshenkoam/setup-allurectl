@@ -1,0 +1,15 @@
+name: 'Setup Allure TestOps'
+description: 'Set up a specific version of the allurectl and add the command-line tools to the PATH'
+author: Artem Eroshhenko <eroshenkoam@me.com>
+inputs:
+  allurectl-version:
+    description: 'The allurectl version to set up'
+    default: 'latest'
+    required: false
+  github-token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ github.token }}
+    required: false
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
