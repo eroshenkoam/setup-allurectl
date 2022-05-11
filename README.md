@@ -4,7 +4,7 @@ This action intended to help you with the setup of `allurectl` in your workflow.
 
 ## What is allurectl
 
-`allurectl` is a CLI wrapper of [Allure TestOps](https://qameta.io) API performing the operations for upload of the test results, launches an projects management on Allure TestOps side.
+`allurectl` is a CLI wrapper of [Allure TestOps](https://qameta.io) API performing the operations for upload of the test results, launches and projects management on Allure TestOps side.
 
 ## Prerequisites
 
