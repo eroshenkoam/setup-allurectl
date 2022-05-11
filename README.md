@@ -9,7 +9,7 @@ This action intended to help you with the setup of `allurectl` in your workflow.
 ## Prerequisites
 
 1. You need to have Allure TestOps instance with [trial](https://qameta.io/free-trial) or commercial licence up and running.
-2. You need to create API token in your profile which will be used for the authentication.
+2. You need to create API token which will be used for the authentication. To create tokens, proceed to your Allure TestOps profile.
 3. You need to have a project created in Allure TestOps to which you are going to upload the test results.
 
 ## Usage
@@ -35,7 +35,7 @@ where
 ### Use allurectl to upload the test results to Allure TestOps
 
 ```yaml
-      - run: allurect watch -- <test execution command>./gradlew clean test
+      - run: allurect watch -- <test execution command>
         env: 
           ALLURE_RESULTS: <path/to/test-results>
 ```
@@ -43,7 +43,7 @@ where
 where
 
 1. `<test execution command>` is the command for triggering the tests execution, e.g. `./gradlew clean test`
-2. <path/to/test-results> is the path to the directory with test results files, e.g. `build/allure-results`
+2. `<path/to/test-results>` is the path to the directory with test results files, e.g. `build/allure-results`
 
 ### Complete example
 
