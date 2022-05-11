@@ -26,12 +26,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+    needs: build    
     steps:
       - uses: actions/checkout@v3
       - uses: ./
       - run: allurectl --version
-  check-dist:
+  test-dist:
     runs-on: ubuntu-latest
+    needs: build    
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
