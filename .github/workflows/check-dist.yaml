@@ -1,4 +1,4 @@
-name: Build
+name: Check dist
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - 'master'
 
 jobs:
-  build:
+  check-dist:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,14 +19,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npm run format-check
-  e2e: 
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./
-      - run: allurectl --version
+      - run: |
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff
+            exit 1
+          fi

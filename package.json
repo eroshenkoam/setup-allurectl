@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "setup allurectl action",
-  "main": "lib/main.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "ncc build -o dist src/main.ts",
     "format": "prettier --write '**/*.ts'",
