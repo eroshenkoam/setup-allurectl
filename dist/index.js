@@ -12451,10 +12451,10 @@ function getOS(platform) {
 exports.getOS = getOS;
 function getVersionBaseURL(version) {
     if (version === 'latest') {
-        return `https://github.com/${const_1.Tool.Owner}/${const_1.Tool.Repo}/releases/latest/download/`;
+        return `https://github.com/${const_1.Tool.Owner}/${const_1.Tool.Repo}/releases/latest/download`;
     }
     else {
-        return `https://github.com/${const_1.Tool.Owner}/${const_1.Tool.Repo}/releases/download/${version}/`;
+        return `https://github.com/${const_1.Tool.Owner}/${const_1.Tool.Repo}/releases/download/${version}`;
     }
 }
 exports.getVersionBaseURL = getVersionBaseURL;

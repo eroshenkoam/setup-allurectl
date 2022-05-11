@@ -28,9 +28,9 @@ export function getOS(platform: string): string {
 
 export function getVersionBaseURL(version: string): string {
   if (version === 'latest') {
-    return `https://github.com/${Tool.Owner}/${Tool.Repo}/releases/latest/download/`
+    return `https://github.com/${Tool.Owner}/${Tool.Repo}/releases/latest/download`
   } else {
-    return `https://github.com/${Tool.Owner}/${Tool.Repo}/releases/download/${version}/`
+    return `https://github.com/${Tool.Owner}/${Tool.Repo}/releases/download/${version}`
   }
 }
 
