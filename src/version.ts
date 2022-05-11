@@ -1,9 +1,4 @@
-import fetch from 'node-fetch'
 import {Tool} from './const'
-
-export interface Release {
-  tag_name: string
-}
 
 export function getArch(arch: string): string {
   switch (arch) {
@@ -31,18 +26,11 @@ export function getOS(platform: string): string {
   }
 }
 
-export async function getLatestVersion(): Promise<string> {
-  const url = `https://api.github.com/repos/${Tool.Org}/${Tool.Repo}/releases/latest`
-  const response = await fetch(url)
-  const json = (await response.json()) as Release
-  return json.tag_name
-}
-
 export function getVersionBaseURL(version: string): string {
   if (version === 'latest') {
-    return `https://github.com/${Tool.Org}/${Tool.Repo}/releases/latest/download/`
+    return `https://github.com/${Tool.Owner}/${Tool.Repo}/releases/latest/download`
   } else {
-    return `https://github.com/${Tool.Org}/${Tool.Repo}/releases/download/${version}/`
+    return `https://github.com/${Tool.Owner}/${Tool.Repo}/releases/download/${version}`
   }
 }
 

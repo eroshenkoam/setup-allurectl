@@ -3,12 +3,19 @@ import * as exec from '@actions/exec'
 import * as tc from '@actions/tool-cache'
 import * as io from '@actions/io'
 import {getOS, getArch, getDownloadURL} from './version'
-import * as github from "@actions/github";
+import * as github from '@actions/github'
 import * as path from 'path'
 import {Tool, Action} from './const'
 import {promises as fsp} from 'fs'
 
-type ClientType = ReturnType<typeof github.getOctokit>;
+type ClientType = ReturnType<typeof github.getOctokit>
+
+function addInputVariableToEnv(input: string, env: string) {
+  const value = core.getInput(input)
+  if (value) {
+    core.exportVariable(env, value)
+  }
+}
 
 export function getHomeDir(): string {
   let homedir = ''
@@ -63,20 +70,51 @@ export async function testTool(cmd: string, args: string[]) {
 }
 
 export async function setUpTool() {
-    const {GITHUB_REPOSITORY, GITHUB_RUN_ID} = process.env
-    if (GITHUB_REPOSITORY && GITHUB_RUN_ID) {
-      const token = core.getInput('github-token', {required: true})
-      const client: ClientType = github.getOctokit(token);
-      const data = await client.rest.actions.getWorkflowRun({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        run_id: github.context.runId
-      })
-      core.exportVariable('ALLURE_JOB_UID', `${GITHUB_REPOSITORY}/actions/workflows/${data.data.workflow_id}`)
+  const github_token = core.getInput('github-token', {required: true})
+  const client: ClientType = github.getOctokit(github_token)
+
+  const owner = github.context.repo.owner
+  const repo = github.context.repo.repo
+  const data = await client.rest.actions.getWorkflowRun({
+    owner,
+    repo,
+    run_id: github.context.runId
+  })
+  addInputVariableToEnv('allure-endpoint', 'ALLURE_ENDPOINT')
+  addInputVariableToEnv('allure-token', 'ALLURE_TOKEN')
+  addInputVariableToEnv('allure-project-id', 'ALLURE_PROJECT_ID')
+  core.exportVariable(
+    'ALLURE_JOB_UID',
+    `${owner}/${repo}/actions/workflows/${data.data.workflow_id}`
+  )
+}
+
+export async function getVersion(inputVersion: string): Promise<string> {
+  const github_token = core.getInput('github-token', {required: true})
+  const client: ClientType = github.getOctokit(github_token)
+
+  if (inputVersion && inputVersion !== 'latest') {
+    const response = await client.rest.repos.getReleaseByTag({
+      owner: Tool.Owner,
+      repo: Tool.Repo,
+      tag: inputVersion
+    })
+    if (response.status === 200) {
+      return response.data.tag_name
+    } else {
+      throw new Error(`Release ${inputVersion} not found`)
     }
+  } else {
+    const response = await client.rest.repos.getLatestRelease({
+      owner: Tool.Owner,
+      repo: Tool.Repo
+    })
+    return response.data.tag_name
   }
-    
-  export async function install(version: string): Promise<void> {
+}
+
+export async function install(inputVersion: string): Promise<void> {
+  const version = await getVersion(inputVersion)
   core.info(`version: ${version}`)
 
   const os: string = getOS(process.platform)
@@ -104,5 +142,6 @@ export async function setUpTool() {
   }
   core.addPath(toolPath)
   await testTool(Tool.CmdName, [Tool.CmdOptVersion])
+
   await setUpTool()
 }
