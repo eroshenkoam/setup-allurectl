@@ -24,4 +24,3 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run format-check
-      - run: npm test
