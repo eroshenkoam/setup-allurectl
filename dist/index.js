@@ -19195,7 +19195,6 @@ function setUpTool() {
         const client = github.getOctokit(github_token);
         const owner = github.context.repo.owner;
         const repo = github.context.repo.repo;
-        yield client.rest.repos.getLatestRelease();
         const data = yield client.rest.actions.getWorkflowRun({
             owner,
             repo,

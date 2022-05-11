@@ -75,13 +75,11 @@ export async function setUpTool() {
   const client: ClientType = github.getOctokit(github_token)
   const owner = github.context.repo.owner
   const repo = github.context.repo.repo
-  await client.rest.repos.getLatestRelease()
   const data = await client.rest.actions.getWorkflowRun({
     owner,
     repo,
     run_id: github.context.runId
   })
-
   addInputVariableToEnv('allure-endpoint', 'ALLURE_ENDPOINT')
   addInputVariableToEnv('allure-token', 'ALLURE_TOKEN')
   addInputVariableToEnv('allure-project-id', 'ALLURE_PROJECT_ID')
@@ -119,5 +117,6 @@ export async function install(version: string): Promise<void> {
   }
   core.addPath(toolPath)
   await testTool(Tool.CmdName, [Tool.CmdOptVersion])
+
   await setUpTool()
 }
