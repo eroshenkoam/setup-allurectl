@@ -3,12 +3,12 @@ import * as exec from '@actions/exec'
 import * as tc from '@actions/tool-cache'
 import * as io from '@actions/io'
 import {getOS, getArch, getDownloadURL} from './version'
-import * as github from "@actions/github";
+import * as github from '@actions/github'
 import * as path from 'path'
 import {Tool, Action} from './const'
 import {promises as fsp} from 'fs'
 
-type ClientType = ReturnType<typeof github.getOctokit>;
+type ClientType = ReturnType<typeof github.getOctokit>
 
 export function getHomeDir(): string {
   let homedir = ''
@@ -63,20 +63,30 @@ export async function testTool(cmd: string, args: string[]) {
 }
 
 export async function setUpTool() {
-    const {GITHUB_REPOSITORY, GITHUB_RUN_ID} = process.env
-    if (GITHUB_REPOSITORY && GITHUB_RUN_ID) {
-      const token = core.getInput('github-token', {required: true})
-      const client: ClientType = github.getOctokit(token);
-      const data = await client.rest.actions.getWorkflowRun({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        run_id: github.context.runId
-      })
-      core.exportVariable('ALLURE_JOB_UID', `${GITHUB_REPOSITORY}/actions/workflows/${data.data.workflow_id}`)
-    }
-  }
-    
-  export async function install(version: string): Promise<void> {
+  const github_token = core.getInput('github-token', {required: true})
+  const allure_endpoint = core.getInput('allure-endpoint', {required: true})
+  const allure_token = core.getInput('allure-token', {required: true})
+  const allure_project_id = core.getInput('allure-project-id', {required: true})
+
+  const client: ClientType = github.getOctokit(github_token)
+  const owner = github.context.repo.owner
+  const repo = github.context.repo.repo
+  await client.rest.repos.getLatestRelease()
+  const data = await client.rest.actions.getWorkflowRun({
+    owner,
+    repo,
+    run_id: github.context.runId
+  })
+  core.exportVariable('ALLURE_ENDPOINT', allure_endpoint)
+  core.exportVariable('ALLURE_TOKEN', allure_token)
+  core.exportVariable('ALLURE_PROJECT_ID', allure_project_id)
+  core.exportVariable(
+    'ALLURE_JOB_UID',
+    `${owner}/${repo}/actions/workflows/${data.data.workflow_id}`
+  )
+}
+
+export async function install(version: string): Promise<void> {
   core.info(`version: ${version}`)
 
   const os: string = getOS(process.platform)

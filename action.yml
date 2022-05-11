@@ -6,6 +6,15 @@ inputs:
     description: 'The allurectl version to set up'
     default: 'latest'
     required: false
+  allure-endpoint:
+    description: 'The allurectl version to set up'
+    required: true
+  allure-token:
+    description: 'The allurectl version to set up'
+    required: true
+  allure-project-id:
+    description: 'The allurectl version to set up'
+    required: true
   github-token:
     description: The GitHub token used to create an authenticated client
     default: ${{ github.token }}
