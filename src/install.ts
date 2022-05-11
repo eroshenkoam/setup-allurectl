@@ -71,8 +71,8 @@ export async function testTool(cmd: string, args: string[]) {
 
 export async function setUpTool() {
   const github_token = core.getInput('github-token', {required: true})
-
   const client: ClientType = github.getOctokit(github_token)
+
   const owner = github.context.repo.owner
   const repo = github.context.repo.repo
   const data = await client.rest.actions.getWorkflowRun({
@@ -89,7 +89,32 @@ export async function setUpTool() {
   )
 }
 
-export async function install(version: string): Promise<void> {
+export async function getVersion(inputVersion: string): Promise<string> {
+  const github_token = core.getInput('github-token', {required: true})
+  const client: ClientType = github.getOctokit(github_token)
+
+  if (inputVersion && inputVersion !== 'latest') {
+    const response = await client.rest.repos.getReleaseByTag({
+      owner: Tool.Owner,
+      repo: Tool.Repo,
+      tag: inputVersion
+    })
+    if (response.status === 200) {
+      return response.data.tag_name
+    } else {
+      throw new Error(`Release ${inputVersion} not found`)
+    }
+  } else {
+    const response = await client.rest.repos.getLatestRelease({
+      owner: Tool.Owner,
+      repo: Tool.Repo
+    })
+    return response.data.tag_name
+  }
+}
+
+export async function install(inputVersion: string): Promise<void> {
+  const version = await getVersion(inputVersion)
   core.info(`version: ${version}`)
 
   const os: string = getOS(process.platform)

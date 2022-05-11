@@ -1,6 +1,6 @@
 export enum Tool {
   Name = 'allurectl',
-  Org = 'allure-framework',
+  Owner = 'allure-framework',
   Repo = 'allurectl',
   CmdName = 'allurectl',
   CmdOptVersion = '--version'
