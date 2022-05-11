@@ -11,10 +11,10 @@ import {promises as fsp} from 'fs'
 type ClientType = ReturnType<typeof github.getOctokit>
 
 function addInputVariableToEnv(input: string, env: string) {
-    const value = core.getInput(input)
-    if (value) {
-        core.exportVariable(env, value)
-    }
+  const value = core.getInput(input)
+  if (value) {
+    core.exportVariable(env, value)
+  }
 }
 
 export function getHomeDir(): string {
