@@ -10,6 +10,13 @@ import {promises as fsp} from 'fs'
 
 type ClientType = ReturnType<typeof github.getOctokit>
 
+function addInputVariableToEnv(input: string, env: string) {
+    const value = core.getInput(input)
+    if (value) {
+        core.exportVariable(env, value)
+    }
+}
+
 export function getHomeDir(): string {
   let homedir = ''
 
@@ -64,9 +71,6 @@ export async function testTool(cmd: string, args: string[]) {
 
 export async function setUpTool() {
   const github_token = core.getInput('github-token', {required: true})
-  const allure_endpoint = core.getInput('allure-endpoint', {required: true})
-  const allure_token = core.getInput('allure-token', {required: true})
-  const allure_project_id = core.getInput('allure-project-id', {required: true})
 
   const client: ClientType = github.getOctokit(github_token)
   const owner = github.context.repo.owner
@@ -77,9 +81,10 @@ export async function setUpTool() {
     repo,
     run_id: github.context.runId
   })
-  core.exportVariable('ALLURE_ENDPOINT', allure_endpoint)
-  core.exportVariable('ALLURE_TOKEN', allure_token)
-  core.exportVariable('ALLURE_PROJECT_ID', allure_project_id)
+
+  addInputVariableToEnv('allure-endpoint', 'ALLURE_ENDPOINT')
+  addInputVariableToEnv('allure-token', 'ALLURE_TOKEN')
+  addInputVariableToEnv('allure-project-id', 'ALLURE_PROJECT_ID')
   core.exportVariable(
     'ALLURE_JOB_UID',
     `${owner}/${repo}/actions/workflows/${data.data.workflow_id}`
