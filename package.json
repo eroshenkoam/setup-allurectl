@@ -5,13 +5,10 @@
   "description": "setup allurectl action",
   "main": "lib/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "ncc build -o dist src/main.ts",
     "format": "prettier --write '**/*.ts'",
     "format-check": "prettier --check '**/*.ts'",
-    "lint": "eslint src/**/*.ts",
-    "package": "ncc build --source-map --license licenses.txt",
-    "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+    "lint": "eslint src/**/*.ts"
   },
   "repository": {
     "type": "git",
